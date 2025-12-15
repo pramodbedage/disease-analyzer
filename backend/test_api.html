@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        .box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Backend API Tester</h1>
+
+    <div class="box">
+        <h3>Test Chat API (POST)</h3>
+        <button onclick="testChat()">Send "Hello" to Chatbot</button>
+        <div id="chatResult"></div>
+    </div>
+
+    <div class="box">
+        <h3>Test Symptoms API (GET)</h3>
+        <button onclick="testSymptoms()">Get All Symptoms</button>
+        <div id="symptomsResult"></div>
+    </div>
+
+    <script>
+        async function testChat() {
+            const resDiv = document.getElementById('chatResult');
+            resDiv.innerHTML = 'Sending...';
+            try {
+                const response = await fetch('http://localhost:5000/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: "Hello" })
+                });
+                const data = await response.json();
+                resDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (err) {
+                resDiv.innerHTML = `<span style="color:red">Error: ${err.message}</span>`;
+            }
+        }
+
+        async function testSymptoms() {
+            const resDiv = document.getElementById('symptomsResult');
+            resDiv.innerHTML = 'Fetching...';
+            try {
+                const response = await fetch('http://localhost:5000/api/diseases/symptoms');
+                const data = await response.json();
+                resDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (err) {
+                resDiv.innerHTML = `<span style="color:red">Error: ${err.message}</span>`;
+            }
+        }
+    </script>
+</body>
+
+</html>
