@@ -2,6 +2,7 @@
 // @route   POST /api/chat
 // @access  Public
 const sendMessage = (req, res) => {
+    console.log('Message received:', req.body.message);
     const { message } = req.body;
 
     // Placeholder response until NLP is integrated

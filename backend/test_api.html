@@ -1,83 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Test</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            padding: 20px;
-        }
-
-        .box {
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-
-        button {
-            padding: 10px 20px;
-            cursor: pointer;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-        }
-
-        pre {
-            background: #f4f4f4;
-            padding: 10px;
-        }
-    </style>
+  <title>API Test</title>
 </head>
-
 <body>
-    <h1>Backend API Tester</h1>
+  <h1>Register User</h1>
+  <form id="registerForm">
+    <input type="text" id="registerName" placeholder="Name" required>
+    <input type="email" id="registerEmail" placeholder="Email" required>
+    <input type="password" id="registerPassword" placeholder="Password" required>
+    <button type="submit">Register</button>
+  </form>
 
-    <div class="box">
-        <h3>Test Chat API (POST)</h3>
-        <button onclick="testChat()">Send "Hello" to Chatbot</button>
-        <div id="chatResult"></div>
-    </div>
+  <h1>Login User</h1>
+  <form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
 
-    <div class="box">
-        <h3>Test Symptoms API (GET)</h3>
-        <button onclick="testSymptoms()">Get All Symptoms</button>
-        <div id="symptomsResult"></div>
-    </div>
+  <h1>Get All Users</h1>
+  <button id="getAllUsers">Get All Users</button>
 
-    <script>
-        async function testChat() {
-            const resDiv = document.getElementById('chatResult');
-            resDiv.innerHTML = 'Sending...';
-            try {
-                const response = await fetch('http://localhost:5000/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: "Hello" })
-                });
-                const data = await response.json();
-                resDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-            } catch (err) {
-                resDiv.innerHTML = `<span style="color:red">Error: ${err.message}</span>`;
-            }
-        }
+  <script>
+    const registerForm = document.getElementById('registerForm');
+    const loginForm = document.getElementById('loginForm');
+    const getAllUsersBtn = document.getElementById('getAllUsers');
 
-        async function testSymptoms() {
-            const resDiv = document.getElementById('symptomsResult');
-            resDiv.innerHTML = 'Fetching...';
-            try {
-                const response = await fetch('http://localhost:5000/api/diseases/symptoms');
-                const data = await response.json();
-                resDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-            } catch (err) {
-                resDiv.innerHTML = `<span style="color:red">Error: ${err.message}</span>`;
-            }
-        }
-    </script>
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('registerName').value;
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      const data = await res.json();
+      console.log(data);
+    });
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      const res = await fetch('/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      console.log(data);
+    });
+
+    getAllUsersBtn.addEventListener('click', async () => {
+      const res = await fetch('/api/users/all');
+      const data = await res.json();
+      console.log(data);
+    });
+  </script>
 </body>
-
 </html>
